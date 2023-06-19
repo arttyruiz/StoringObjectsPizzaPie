@@ -1,0 +1,37 @@
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+#Creating my database engine
+engine = create_engine('sqlite:///pizzapiemaker')
+# create a session factory
+Session = sessionmaker(engine)
+#Creating a base for declaritve models
+Base = declarative_base()
+# Defining my PizzaPieMaker Class
+class PizzaPieMaker(Base):
+    __tablename__ = 'PizzaPieMaker'
+    id = Column(Integer, primary_key=True)
+    AmountofPies = Column(Integer)
+    SizeOfPie = Column(String)
+    CrustOption = Column(String)
+    Toppings = Column(String)
+    TotalDue = Column(Float)
+    
+    def __init__(self, AmountofPies, SizeOfPie, CrustOption, Toppings, TotalDue):
+        self.AmountofPies = AmountofPies
+        self.SizeOfPie = SizeOfPie
+        self.CrustOption = CrustOption
+        self.Toppings = Toppings
+        self.TotalDue = TotalDue
+        
+    def save(self): #this will save our orders to the database
+        session = Session()
+        session.add(self)
+        session.commit()
+
+    def all(): #This will retrieve our orders from the database
+        session = Session()
+        return session.query(PizzaPieMaker).all()
+
+
